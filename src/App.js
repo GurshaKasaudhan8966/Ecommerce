@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+
 import './App.css';
+import HPage from './customer/Pages/HomePages/HPage';
+import Cart from './customer/components/Cart/Cart';
+import Checkout from './customer/components/Checkout/Checkout';
+import DeliveryAddressForm from './customer/components/Checkout/DeliveryAddressForm';
+import Footer1 from './customer/components/Footer/Footer1';
+import Nav from './customer/components/Navigations/Nav';
+import Product from './customer/components/Product/Product';
+import ProductDetails from './customer/components/ProductDetails/ProductDetails';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Nav/>
+      <div>
+        {/* <HPage/> */}
+        {/* <Product/> */}
+        {/* <ProductDetails/> */}
+        {/* <Cart/> */}
+        <Checkout/>
+        {/* <DeliveryAddressForm/> */}
+      </div>
+      <Footer1/>
     </div>
   );
 }
