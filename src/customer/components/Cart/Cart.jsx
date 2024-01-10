@@ -1,14 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import CartItem from './CartItem'
 import { Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { getCart } from '../../../State/Cart/Action';
+import { store } from '../../../State/store';
 
 export default function Cart() {
+
+  const navigate=useNavigate();
+  const {cart}=useSelector(store=>store)
+  const dispatch=useDispatch()
+  const handleCheckout=()=>{
+    navigate("/checkout?step=2")
+  }
+  useEffect(()=>{
+    dispatch(getCart())
+  },[cart.updateCartItem,cart.deleteCartItem])
+
+
   return (
     <div className="">
      <div className="lg:grid grid-cols-3 lg:px-16 relative">
       <div className="lg:col-span-2 lg:px-5 bg-white">
       <div className=" space-y-3">
-           {[1,1,1,1].map((item)=> <CartItem/> )}
+           {cart.cart?.cartItems.map((item)=> <CartItem item={item}/> )}
       </div>
     </div>
     <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0 ">
@@ -19,11 +35,11 @@ export default function Cart() {
         <div className="space-y-3 font-semibold">
           <div className="flex justify-between pt-3 text-black ">
             <span>Price</span>
-            <span>₹4697</span>
+            <span>₹{cart.cart?.totalPrice}</span>
           </div>
           <div className="flex justify-between">
             <span>Discount</span>
-            <span className="text-green-700">-₹469</span>
+            <span className="text-green-700">-₹{cart.cart?.discounte}</span>
           </div>
           <div className="flex justify-between">
             <span>Delivery Charges</span>
@@ -32,11 +48,11 @@ export default function Cart() {
           <hr />
           <div className="flex justify-between font-bold text-lg">
             <span>Total Amount</span>
-            <span className="text-green-700">₹4985</span>
+            <span className="text-green-700">{cart.cart?.totalDiscountedPrice}</span>
           </div>
         </div>
 
-        <Button
+        <Button onClick={handleCheckout}
           variant="contained"
           type="submit"
           sx={{ padding: ".8rem 2rem", marginTop: "2rem", width: "100%" }}

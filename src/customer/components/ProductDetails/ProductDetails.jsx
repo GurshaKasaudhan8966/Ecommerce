@@ -19,13 +19,18 @@
   }
   ```
 */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { Rating, Button, Grid, Box, LinearProgress } from "@mui/material";
 import ProductReviewCart from "./ProductReviewCart";
 import { mens_kurta } from "../../../Data/Men/mens_kurta";
 import HomeSectionCard from "../HomeSectionCard/HomeSectionCard";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProductsById } from "../../../State/Product/Action";
+import { store } from "../../../State/store";
+import { addItemToCart } from "../../../State/Cart/Action";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -81,9 +86,29 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+
+
 export default function ProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const [selectedColor, setSelectedColor] = useState();
+  const [selectedSize, setSelectedSize] = useState("");
+  const navigate=useNavigate();
+  const params=useParams()
+  const dispatch=useDispatch();
+  const {products}=useSelector(store=>store)
+ 
+  console.log(params)
+
+  const handleAddToCart=()=>{
+    const data={productId:params.productId,size:selectedSize.name}
+    console.log("data ",data)
+    dispatch(addItemToCart(data))
+  navigate("/cart")
+  }
+
+  useEffect(()=>{
+    const data={productId:params.productId}
+   dispatch(findProductsById(data))
+  },[params.productId])
 
   return (
     <div className="bg-white">
@@ -132,7 +157,7 @@ export default function ProductDetails() {
           <div className="flex flex-col items-center ">
             <div className=" overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
               <img
-                src={product.images[0].src}
+                src={products.product?.imageUrl}
                 alt={product.images[0].alt}
                 className="h-full w-full object-cover object-center"
               />
@@ -150,12 +175,25 @@ export default function ProductDetails() {
             </div>
           </div>
           {/* Product info */}
+          <div className="lg:col-span-1 maxt-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div className="lg:col-span-2">
+            <h1 className="text-lg lg:text-xl font-semibold text-gray-900">
+                {" "}
+                {products.product?.brand}
+            </h1>
+            <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
+               {products.product?.title}
+            </h1>
+            
+
+          </div>
+          {/* options */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <div className="flex space-x-5 items-center text-lg lg:text-xl tracking-tight text-gray-900 mt-6">
-              <p className="font-semibold">₹199</p>
-              <p className="opacity-50 line-through">₹211</p>
-              <p className="text-green-600 font-semibold">5% Off</p>
+              <p className="font-semibold">{products.product?.discountedPrice}</p>
+              <p className="opacity-50 line-through">{products.product?.price}</p>
+              <p className="text-green-600 font-semibold">{products.product?.discountedPersent}% Off</p>
             </div>
 
             {/* Reviews */}
@@ -219,7 +257,7 @@ export default function ProductDetails() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900">Size</h3>
                   <a
-                    href="#"
+                    href="hjhjh"
                     className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                   >
                     Size guide
@@ -295,7 +333,7 @@ export default function ProductDetails() {
                 </RadioGroup>
               </div>
 
-              <Button
+              <Button onClick={handleAddToCart}
                 variant="contained"
                 type="submit"
                 sx={{ padding: ".8rem 2rem", marginTop: "2rem" }}
@@ -340,6 +378,7 @@ export default function ProductDetails() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </section>
 
